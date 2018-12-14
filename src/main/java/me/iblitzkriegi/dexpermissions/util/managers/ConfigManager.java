@@ -1,4 +1,4 @@
-package me.iblitzkriegi.dexpermissions.util;
+package me.iblitzkriegi.dexpermissions.util.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
