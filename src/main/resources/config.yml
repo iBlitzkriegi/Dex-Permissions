@@ -1,4 +1,8 @@
 Groups:
   member:
     permissions:
-      - test.perm
+      - break.block
+Users:
+  0e11c47b-d93a-42af-a13f-5fa7f0dca22e:
+    permissions: 0
+    group: member
