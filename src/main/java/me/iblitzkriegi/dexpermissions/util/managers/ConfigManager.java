@@ -20,10 +20,10 @@ public class ConfigManager {
     }
 
     public void setup(Plugin plugin) {
+        this.plugin = plugin;
         config = plugin.getConfig();
-        config.options().copyDefaults(true);
-        file = new File(plugin.getDataFolder(), "config.yml");
-        saveConfig();
+        plugin.saveDefaultConfig();
+
     }
 
     private void saveConfig() {
