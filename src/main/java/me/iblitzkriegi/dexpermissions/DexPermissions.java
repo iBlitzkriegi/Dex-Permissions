@@ -1,30 +1,37 @@
 package me.iblitzkriegi.dexpermissions;
 
-import me.iblitzkriegi.dexpermissions.util.ConfigManager;
-import org.bukkit.permissions.PermissionAttachment;
+import me.iblitzkriegi.dexpermissions.util.managers.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
+import static me.iblitzkriegi.dexpermissions.util.managers.PermissionManager.playerPermissions;
 
 public class DexPermissions extends JavaPlugin {
 
-    static DexPermissions instance = new DexPermissions();
-    public HashMap<String, PermissionAttachment> playerPermissions = new HashMap<>();
-    private DexPermissions() {
+    private static DexPermissions instance;
+
+    public DexPermissions() {
+        instance = this;
     }
 
     public static DexPermissions getInstance() {
         return instance;
     }
 
+    public static void main(String[] args) {
+
+    }
+
     @Override
     public void onEnable() {
         ConfigManager.getInstance().setup(this);
+        getServer().getPluginManager().registerEvents(new EvtJoinLeave(), this);
+
     }
 
     @Override
     public void onDisable() {
-
+        playerPermissions.clear();
     }
 
 }
