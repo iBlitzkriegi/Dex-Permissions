@@ -19,14 +19,15 @@ public class ConfigManager {
         return instance;
     }
 
-    public void setup(Plugin plugin) {
+    public void setup (Plugin plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
+        file = new File(plugin.getDataFolder(), "config.yml");
         plugin.saveDefaultConfig();
 
     }
 
-    private void saveConfig() {
+    public void saveConfig () {
         try {
             config.save(file);
         } catch (IOException e) {
@@ -34,9 +35,10 @@ public class ConfigManager {
         }
     }
 
-    public void reloadConfig() {
+    public void reloadConfig () {
         config = YamlConfiguration.loadConfiguration(file);
     }
+
 
 
 }
