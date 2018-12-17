@@ -2,6 +2,8 @@ package me.iblitzkriegi.dexpermissions.util.managers;
 
 import me.iblitzkriegi.dexpermissions.DexPermissions;
 import me.iblitzkriegi.dexpermissions.util.Util;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -38,19 +40,48 @@ public class PermissionManager {
         PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
         FileConfiguration config = ConfigManager.getInstance().config;
         permissionAttachment.setPermission(permission, true);
-        String path = "Users." + uuid + ".permissions";
-        List<String> permissions = config.getStringList(path);
+        ConfigurationSection section = config.getConfigurationSection("Users." + uuid);
+        List<String> permissions = section.getStringList("permissions");
         if (permission.isEmpty()) {
             List<String> setPermissions = new ArrayList<>();
             setPermissions.add(permission);
-            config.set(path, setPermissions);
+            section.set("permissions", setPermissions);
         } else {
             if (permissions.contains(permission)) {
                 return;
             }
             permissions.add(permission);
-            config.set(path, permissions);
+            section.set("permissions", permissions);
         }
     }
 
+    public static void addPermission(String group, String permission) {
+        FileConfiguration config = ConfigManager.getInstance().config;
+        if (config.getConfigurationSection("Groups." + group) == null) {
+            return;
+        }
+
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            String uuid = Util.getUniqueId(player);
+            if (config.getString("Users." + uuid + ".group").equalsIgnoreCase(group)) {
+                PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
+                permissionAttachment.setPermission(permission, true);
+            }
+        }
+        ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
+        List<String> permissions = configurationSection.getStringList("permissions");
+        if (permissions.isEmpty()) {
+            List<String> setPermissions = new ArrayList<>();
+            setPermissions.add(permission);
+            configurationSection.set("permissions", setPermissions);
+        } else {
+            if (permissions.contains(permission)) {
+                return;
+            }
+            permissions.add(permission);
+            configurationSection.set("permissions", permissions);
+        }
+
+    }
+    
 }
