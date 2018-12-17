@@ -55,6 +55,21 @@ public class PermissionManager {
         }
     }
 
+    public static void removePermission(Player player, String permission) {
+        String uuid = Util.getUniqueId(player);
+        PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
+        FileConfiguration config = ConfigManager.getInstance().config;
+        permissionAttachment.setPermission(permission, false);
+        ConfigurationSection section = config.getConfigurationSection("Users." + uuid);
+        List<String> permissions = section.getStringList("permissions");
+        if (!permissions.isEmpty()) {
+            if (permission.contains(permission)) {
+                permissions.remove(permission);
+                section.set("permissions", permissions);
+            }
+        }
+    }
+
     public static void addPermission(String group, String permission) {
         FileConfiguration config = ConfigManager.getInstance().config;
         if (config.getConfigurationSection("Groups." + group) == null) {
@@ -99,7 +114,7 @@ public class PermissionManager {
             permissionAttachment.setPermission(permission, true);
         }
         section.set("group", group);
-
     }
+
 
 }
