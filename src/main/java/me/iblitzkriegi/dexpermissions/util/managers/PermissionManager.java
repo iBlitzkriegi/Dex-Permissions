@@ -18,7 +18,7 @@ public class PermissionManager {
 
     public static void setupPermissions(Player player) {
         DexPermissions dexPermissions = DexPermissions.getInstance();
-        FileConfiguration config = dexPermissions.getConfig();
+        FileConfiguration config = ConfigManager.getInstance().config;
         PermissionAttachment permissionAttachment = player.addAttachment(dexPermissions);
         String uuid = Util.getUniqueId(player);
         playerPermissions.put(uuid, permissionAttachment);
@@ -38,7 +38,7 @@ public class PermissionManager {
     public static void addPermission(Player player, String permission) {
         String uuid = Util.getUniqueId(player);
         PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         permissionAttachment.setPermission(permission, true);
         ConfigurationSection section = config.getConfigurationSection("Users." + uuid);
         List<String> permissions = section.getStringList("permissions");
@@ -58,7 +58,7 @@ public class PermissionManager {
     public static void removePermission(Player player, String permission) {
         String uuid = Util.getUniqueId(player);
         PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         permissionAttachment.setPermission(permission, false);
         ConfigurationSection section = config.getConfigurationSection("Users." + uuid);
         List<String> permissions = section.getStringList("permissions");
@@ -71,7 +71,7 @@ public class PermissionManager {
     }
 
     public static void addPermission(String group, String permission) {
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         if (config.getConfigurationSection("Groups." + group) == null) {
             return;
         }
@@ -99,7 +99,7 @@ public class PermissionManager {
     }
 
     public static void removePermission(String group, String permission) {
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
         if (configurationSection == null) return;
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -125,7 +125,7 @@ public class PermissionManager {
     }
 
     public static void setGroup(Player player, String group) {
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         String configGroup = config.getString("Groups." + group);
         if (configGroup == null) return;
 
@@ -143,7 +143,7 @@ public class PermissionManager {
     }
 
     public static String getGroup(Player player) {
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         ConfigurationSection configurationSection = config.getConfigurationSection("Users." + Util.getUniqueId(player));
         String group = configurationSection.getString("group");
         return group == null ? null : group;
