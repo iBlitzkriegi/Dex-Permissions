@@ -1,7 +1,6 @@
 package me.iblitzkriegi.dexpermissions;
 
 import me.iblitzkriegi.dexpermissions.util.managers.ConfigManager;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static me.iblitzkriegi.dexpermissions.util.managers.PermissionManager.playerPermissions;
@@ -18,10 +17,6 @@ public class DexPermissions extends JavaPlugin {
         return instance;
     }
 
-    public static void main(String[] args) {
-
-    }
-
     @Override
     public void onEnable() {
         ConfigManager.getInstance().setup(this);
@@ -31,6 +26,7 @@ public class DexPermissions extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ConfigManager.getInstance().saveConfig();
         playerPermissions.clear();
     }
 
