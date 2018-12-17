@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
-import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +140,13 @@ public class PermissionManager {
             permissionAttachment.setPermission(permission, true);
         }
         section.set("group", group);
+    }
+
+    public static String getGroup(Player player) {
+        FileConfiguration config = ConfigManager.getInstance().config;
+        ConfigurationSection configurationSection = config.getConfigurationSection("Users." + Util.getUniqueId(player));
+        String group = configurationSection.getString("group");
+        return group == null ? null : group;
     }
 
 
