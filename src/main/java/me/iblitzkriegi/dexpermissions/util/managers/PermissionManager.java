@@ -81,7 +81,25 @@ public class PermissionManager {
             permissions.add(permission);
             configurationSection.set("permissions", permissions);
         }
+    }
+
+    public static void setGroup(Player player, String group) {
+        FileConfiguration config = ConfigManager.getInstance().config;
+        String configGroup = config.getString("Groups." + group);
+        if (configGroup == null) return;
+
+        String uuid = Util.getUniqueId(player);
+        PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
+        ConfigurationSection section = config.getConfigurationSection("Users." + uuid);
+        String currentGroup = section.getString("group");
+        for (String permission : config.getConfigurationSection("Groups." + currentGroup).getStringList("permissions")) {
+            permissionAttachment.unsetPermission(permission);
+        }
+        for (String permission : config.getConfigurationSection("Groups." + group).getStringList("permissions")) {
+            permissionAttachment.setPermission(permission, true);
+        }
+        section.set("group", group);
 
     }
-    
+
 }
