@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import sun.security.krb5.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +97,32 @@ public class PermissionManager {
             permissions.add(permission);
             configurationSection.set("permissions", permissions);
         }
+    }
+
+    public static void removePermission(String group, String permission) {
+        FileConfiguration config = ConfigManager.getInstance().config;
+        ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
+        if (configurationSection == null) return;
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            String uuid = Util.getUniqueId(player);
+            ConfigurationSection playerSection = config.getConfigurationSection("Users." + uuid);
+            if (playerSection.getString("group").equalsIgnoreCase(group)) {
+                PermissionAttachment permissionAttachment = playerPermissions.get(uuid);
+                List<String> playerPermissions = playerSection.getStringList("permissions");
+                if (!playerPermissions.isEmpty()) {
+                    if (!playerPermissions.contains(permission)) {
+                        permissionAttachment.setPermission(permission, false);
+                    }
+                } else {
+                    permissionAttachment.setPermission(permission, false);
+                }
+            }
+        }
+        List<String> permissions = configurationSection.getStringList("permissions");
+        if (permissions.isEmpty() || !permissions.contains(permission)) return;
+        permissions.remove(permission);
+        configurationSection.set("permissions", permissions);
+
     }
 
     public static void setGroup(Player player, String group) {
