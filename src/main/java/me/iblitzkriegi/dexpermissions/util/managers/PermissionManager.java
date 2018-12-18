@@ -124,6 +124,12 @@ public class PermissionManager {
 
     }
 
+    public static void createGroup(String name) {
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
+        if (config.getConfigurationSection("Groups." + name) != null) return;
+        config.createSection("Groups." + name).set("permissions", new ArrayList<>());
+    }
+
     public static void setGroup(Player player, String group) {
         FileConfiguration config = ConfigManager.getInstance().getConfig();
         String configGroup = config.getString("Groups." + group);
