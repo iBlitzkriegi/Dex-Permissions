@@ -21,6 +21,7 @@ public class DexPermissions extends JavaPlugin {
     public void onEnable() {
         ConfigManager.getInstance().setup(this);
         getServer().getPluginManager().registerEvents(new EvtJoinLeave(), this);
+        this.getCommand("dex").setExecutor(new DexCommand());
 
     }
 

@@ -3,5 +3,6 @@ version: 1.0.0
 main: me.iblitzkriegi.dexpermissions.DexPermissions
 author: iBlitzkriegi
 description: Permissions plugin for Avdex
-
-
+commands:
+  dex:
+    description: Manage the avdex permissions plugin
