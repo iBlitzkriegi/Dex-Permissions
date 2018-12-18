@@ -16,6 +16,7 @@ public class PermissionManager {
 
     public static HashMap<String, PermissionAttachment> playerPermissions = new HashMap<>();
     public static HashMap<String, String> groupPrefixes = new HashMap<>();
+    public static HashMap<String, String> groupSuffixes = new HashMap<>();
 
     public static void setupPermissions(Player player) {
         DexPermissions dexPermissions = DexPermissions.getInstance();
@@ -158,8 +159,19 @@ public class PermissionManager {
     }
 
     public static String getGroupPrefix(String group) {
-        String prefix = groupPrefixes.get(group);
-        return prefix == null ? null : prefix;
+        return groupPrefixes.get(group);
+    }
+
+    public static void setGroupSuffix(String group, String suffix) {
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
+        ConfigurationSection groupSection = config.getConfigurationSection("Groups." + group);
+        if (groupSection == null) return;
+        groupSection.set("suffix", suffix);
+        groupSuffixes.put(group, suffix);
+    }
+
+    public static String getGuildSuffix(String group) {
+        return groupSuffixes.get(group);
     }
 
     public static String getGroup(Player player) {
