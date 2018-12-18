@@ -29,6 +29,12 @@ public class ConfigManager {
         config = plugin.getConfig();
         file = new File(plugin.getDataFolder(), "config.yml");
         plugin.saveDefaultConfig();
+        for (String group : config.getConfigurationSection("Groups").getKeys(false)) {
+            String prefix = config.getConfigurationSection("Groups." + group).getString("prefix");
+            if (prefix != null) {
+                PermissionManager.groupPrefixes.put(group, prefix);
+            }
+        }
 
     }
 
