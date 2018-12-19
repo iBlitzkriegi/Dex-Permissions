@@ -1,5 +1,6 @@
 package me.iblitzkriegi.dexpermissions.util.managers;
 
+import me.iblitzkriegi.dexpermissions.DexPermissions;
 import me.iblitzkriegi.dexpermissions.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,6 +21,7 @@ public class ConfigManager {
     Plugin plugin;
     FileConfiguration config;
     File file;
+    public static String prefix;
 
     public static ConfigManager getInstance() {
         return instance;
@@ -30,6 +32,7 @@ public class ConfigManager {
         config = plugin.getConfig();
         file = new File(plugin.getDataFolder(), "config.yml");
         plugin.saveDefaultConfig();
+        prefix = config.getString("plugin-prefix");
         for (String group : config.getConfigurationSection("Groups").getKeys(false)) {
             ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
             String prefix = configurationSection.getString("prefix");
@@ -59,6 +62,22 @@ public class ConfigManager {
             permissionAttachment.remove();
             PermissionManager.setupPermissions(player);
         }
+        prefix = config.getString("plugin-prefix");
+        for (String group : config.getConfigurationSection("Groups").getKeys(false)) {
+            ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
+            String prefix = configurationSection.getString("prefix");
+            String suffix = configurationSection.getString("suffix");
+            if (prefix != null) {
+                PermissionManager.groupPrefixes.put(group, prefix);
+            }
+            if (suffix != null) {
+                PermissionManager.groupSuffixes.put(group, suffix);
+            }
+        }
+    }
+
+    public static String getPrefix() {
+        return prefix;
     }
 
     public FileConfiguration getConfig() {
