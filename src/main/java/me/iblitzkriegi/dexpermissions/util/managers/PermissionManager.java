@@ -55,6 +55,7 @@ public class PermissionManager {
             permissions.add(permission);
             section.set("permissions", permissions);
         }
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void removePermission(Player player, String permission) {
@@ -70,6 +71,7 @@ public class PermissionManager {
                 section.set("permissions", permissions);
             }
         }
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void addPermission(String group, String permission) {
@@ -98,6 +100,7 @@ public class PermissionManager {
             permissions.add(permission);
             configurationSection.set("permissions", permissions);
         }
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void removePermission(String group, String permission) {
@@ -123,6 +126,7 @@ public class PermissionManager {
         if (permissions.isEmpty() || !permissions.contains(permission)) return;
         permissions.remove(permission);
         configurationSection.set("permissions", permissions);
+        ConfigManager.getInstance().saveConfig();
 
     }
 
@@ -130,12 +134,16 @@ public class PermissionManager {
         FileConfiguration config = ConfigManager.getInstance().getConfig();
         if (config.getConfigurationSection("Groups." + name) != null) return;
         config.createSection("Groups." + name).set("permissions", new ArrayList<>());
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void deleteGroup(String name) {
         FileConfiguration config = ConfigManager.getInstance().getConfig();
         if (config.getConfigurationSection("Groups." + name) == null) return;
         config.set("Groups." + name, null);
+        groupSuffixes.remove(name);
+        groupPrefixes.remove(name);
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void setGroup(Player player, String group) {
@@ -154,6 +162,7 @@ public class PermissionManager {
             permissionAttachment.setPermission(permission, true);
         }
         section.set("group", group);
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static void setGroupPrefix(String group, String prefix) {
@@ -162,6 +171,7 @@ public class PermissionManager {
         if (groupSection == null) return;
         groupSection.set("prefix", prefix);
         groupPrefixes.put(group, prefix);
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static String getGroupPrefix(String group) {
@@ -174,6 +184,7 @@ public class PermissionManager {
         if (groupSection == null) return;
         groupSection.set("suffix", suffix);
         groupSuffixes.put(group, suffix);
+        ConfigManager.getInstance().saveConfig();
     }
 
     public static String getGuildSuffix(String group) {
