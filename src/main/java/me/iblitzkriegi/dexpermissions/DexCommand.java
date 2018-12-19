@@ -15,7 +15,7 @@ public class DexCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command cmd, String s, String[] args) {
         if (!commandSender.hasPermission("dex.permissions")) {
-            Util.sendMessage(commandSender, "&fYou must have the &adex.permissions &fpermission to use this command!");
+            Util.sendMessage(commandSender, "You must have the &adex.permissions &fpermission to use this command!");
             return true;
         }
         if (args.length == 0) {
@@ -26,7 +26,7 @@ public class DexCommand implements CommandExecutor {
         switch (argument) {
             case "reload":
                 ConfigManager.getInstance().reloadConfig();
-                Util.sendMessage(commandSender, "&8[&fDexPermissions&8] &fThe config has been successfully reloaded");
+                Util.sendMessage(commandSender, "The config has been successfully reloaded");
                 break;
             case "group":
                 if (args.length <= 1) {
@@ -41,7 +41,7 @@ public class DexCommand implements CommandExecutor {
                     }
                     Player player = Bukkit.getServer().getPlayer(args[2]);
                     if (player == null) {
-                        Util.sendMessage(commandSender, "&fCould not parse &a" + args[2] + " as a player.");
+                        Util.sendMessage(commandSender, "Could not parse &a" + args[2] + " &fas a player.");
                         return true;
                     }
                     PermissionManager.setGroup(player, args[3]);
@@ -59,7 +59,8 @@ public class DexCommand implements CommandExecutor {
 
                 if (args.length == 3) {
                     if (args[2].equalsIgnoreCase("permissions")) {
-                        //TODO Return list of permissions
+                        Util.sendMessage(commandSender, "Here is a list of " + args[1] + "'s permissions; " + "");
+                        //TODO
                     }
                     return true;
                 } else if (args.length >= 5) {
