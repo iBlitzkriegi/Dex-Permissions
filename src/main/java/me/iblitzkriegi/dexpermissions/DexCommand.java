@@ -58,7 +58,7 @@ public class DexCommand implements CommandExecutor {
                     PermissionManager.setGroup(player, args[3]);
                     return true;
                 } else if (firstArgument.equalsIgnoreCase("create")) {
-                    if (args.length <= 3) {
+                    if (args.length < 3) {
                         sendInvalidUsage(commandSender);
                         return true;
                     } else if (args.length == 4) {
@@ -82,11 +82,11 @@ public class DexCommand implements CommandExecutor {
                 if (args.length == 3) {
                     if (args[2].equalsIgnoreCase("permissions")) {
                         Util.sendMessage(commandSender, "Here is a list of " + args[1] + "'s permissions; " + "");
-                        //TODO
+                        return true;
                     }
                     sendInvalidUsage(commandSender);
                     return true;
-                } else if (args.length >= 5) {
+                } else if (args.length >= 4) {
                     String group = args[1];
                     if (args[2].equalsIgnoreCase("set")) {
                         String arg = args[3].toLowerCase();
@@ -97,11 +97,13 @@ public class DexCommand implements CommandExecutor {
                             case "suffix":
                                 PermissionManager.setGroupSuffix(group, getArgs(args,4));
                                 break;
+                            case "default":
+                                PermissionManager.setDefaulGroup(group);
+                                break;
                             default:
                                 sendInvalidUsage(commandSender);
 
                         }
-                        sendInvalidUsage(commandSender);
                         return true;
                     }
                     if (args[3].equalsIgnoreCase("permission")) {
@@ -113,6 +115,7 @@ public class DexCommand implements CommandExecutor {
                             case "remove":
                             case "delete":
                                 PermissionManager.removePermission(group, args[4]);
+                                break;
                             default:
                                 sendInvalidUsage(commandSender);
                         }
