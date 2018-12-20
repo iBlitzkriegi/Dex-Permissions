@@ -24,11 +24,14 @@ public class DexCommand implements CommandExecutor {
             return true;
         } else if (args.length == 1) {
             String category = args[0].toLowerCase();
-            if (!(category.contains("group") || category.contains("user"))) {
-                sendInvalidUsage(commandSender);
+            if (!category.contains("reload")) {
+                if (!(category.contains("group") || category.contains("user"))) {
+                    sendInvalidUsage(commandSender);
+                    return true;
+                }
+                sendHelpMessage(commandSender, category);
+                return true;
             }
-            sendHelpMessage(commandSender, category);
-            return true;
         }
         String argument = args[0].toLowerCase();
         switch (argument) {
@@ -55,9 +58,11 @@ public class DexCommand implements CommandExecutor {
                     PermissionManager.setGroup(player, args[3]);
                     return true;
                 } else if (firstArgument.equalsIgnoreCase("create")) {
-                    if (args.length != 3) {
+                    if (args.length <= 3) {
                         sendInvalidUsage(commandSender);
                         return true;
+                    } else if (args.length == 4) {
+                        //TODO INHERITS!
                     }
                     PermissionManager.createGroup(args[2]);
                     return true;
@@ -69,34 +74,48 @@ public class DexCommand implements CommandExecutor {
                     PermissionManager.deleteGroup(args[2]);
                 }
                 ConfigurationSection groupSection = ConfigManager.getInstance().getConfig().getConfigurationSection("Groups." + args[1]);
-                if (groupSection == null) return true;
+                if (groupSection == null) {
+                    Util.sendMessage(commandSender, "Could not parse &a" + args[1] + " &fas a valid group.");
+                    return true;
+                }
 
                 if (args.length == 3) {
                     if (args[2].equalsIgnoreCase("permissions")) {
                         Util.sendMessage(commandSender, "Here is a list of " + args[1] + "'s permissions; " + "");
                         //TODO
                     }
+                    sendInvalidUsage(commandSender);
                     return true;
                 } else if (args.length >= 5) {
                     String group = args[1];
                     if (args[2].equalsIgnoreCase("set")) {
-                        if (args[3].equalsIgnoreCase("prefix")) {
-                            PermissionManager.setGroupPrefix(group, getArgs(args, 4));
-                            return true;
-                        } else if (args[3].equalsIgnoreCase("suffix")) {
-                            PermissionManager.setGroupSuffix(group, getArgs(args, 4));
+                        String arg = args[3].toLowerCase();
+                        switch (arg) {
+                            case "prefix":
+                                PermissionManager.setGroupPrefix(group, getArgs(args, 4));
+                                break;
+                            case "suffix":
+                                PermissionManager.setGroupSuffix(group, getArgs(args,4));
+                                break;
+                            default:
+                                sendInvalidUsage(commandSender);
+
                         }
-                        return true;
-                    }
-                    if (!args[2].equalsIgnoreCase("permission")) {
                         sendInvalidUsage(commandSender);
                         return true;
                     }
-                    if (args[3].equalsIgnoreCase("add")) {
-                        PermissionManager.addPermission(args[1], args[4]);
-                        return true;
-                    } else if (args[3].equalsIgnoreCase("remove")) {
-                        PermissionManager.removePermission(args[1], args[4]);
+                    if (args[3].equalsIgnoreCase("permission")) {
+                        String arg = args[2].toLowerCase();
+                        switch (arg) {
+                            case "add":
+                                PermissionManager.addPermission(group, args[4]);
+                                break;
+                            case "remove":
+                            case "delete":
+                                PermissionManager.removePermission(group, args[4]);
+                            default:
+                                sendInvalidUsage(commandSender);
+                        }
                         return true;
                     }
                 }
@@ -120,10 +139,10 @@ public class DexCommand implements CommandExecutor {
             helpMessage.append("&b<group> <permissions> - &fGet a groups perms\n");
             helpMessage.append("&b<group> set prefix <prefix> - &fSet chat prefix\n");
             helpMessage.append("&b<group> set suffix <suffix> - &fSet chat suffix\n");
-            helpMessage.append("&b<group> permission add <perm> - &fAdd perms\n");
-            helpMessage.append("&b<group> permission remove <perm> - &fRemove perms\n");
+            helpMessage.append("&b<group> add permission <perm> - &fAdd perms\n");
+            helpMessage.append("&b<group> remove permission <perm> - &fRemove perms\n");
         } else if (type.contains("user")) {
-            
+
         }
         commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', helpMessage.toString()));
     }
