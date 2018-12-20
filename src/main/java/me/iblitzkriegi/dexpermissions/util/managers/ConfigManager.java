@@ -11,7 +11,6 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.io.IOException;
 
 import static me.iblitzkriegi.dexpermissions.util.managers.PermissionManager.playerPermissions;
 
@@ -21,6 +20,7 @@ public class ConfigManager {
     Plugin plugin;
     FileConfiguration config;
     File file;
+    public static String defaultGroup;
     public static String prefix;
 
     public static ConfigManager getInstance() {
@@ -31,8 +31,11 @@ public class ConfigManager {
         this.plugin = plugin;
         config = plugin.getConfig();
         file = new File(plugin.getDataFolder(), "config.yml");
+        getConfig().options().copyDefaults(true);
         plugin.saveDefaultConfig();
         prefix = config.getString("plugin-prefix");
+        defaultGroup = config.getString("default-group");
+        if (config.getConfigurationSection("Groups") == null) return;
         for (String group : config.getConfigurationSection("Groups").getKeys(false)) {
             ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
             String prefix = configurationSection.getString("prefix");
@@ -48,11 +51,7 @@ public class ConfigManager {
     }
 
     public void saveConfig() {
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            Bukkit.getServer().getLogger().severe("Unable to save the config!");
-        }
+        plugin.saveConfig();
     }
 
     public void reloadConfig() {
@@ -81,6 +80,13 @@ public class ConfigManager {
     }
 
     public FileConfiguration getConfig() {
-        return config;
+        return plugin.getConfig();
     }
+
+    public static boolean getDefaultGroup() {
+        if (defaultGroup == null) return false;
+        if (getInstance().config.getConfigurationSection("Groups." + defaultGroup ) == null) return false;
+        return true;
+    }
+
 }

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static me.iblitzkriegi.dexpermissions.util.managers.ConfigManager.defaultGroup;
+
 public class PermissionManager {
 
     public static HashMap<String, PermissionAttachment> playerPermissions = new HashMap<>();
@@ -20,21 +22,34 @@ public class PermissionManager {
 
     public static void setupPermissions(Player player) {
         DexPermissions dexPermissions = DexPermissions.getInstance();
-        FileConfiguration config = ConfigManager.getInstance().config;
+        FileConfiguration config = ConfigManager.getInstance().getConfig();
         PermissionAttachment permissionAttachment = player.addAttachment(dexPermissions);
         String uuid = Util.getUniqueId(player);
         playerPermissions.put(uuid, permissionAttachment);
-        for (String user : config.getConfigurationSection("Users").getKeys(false)) {
-            if (uuid.equalsIgnoreCase(user)) {
-                String group = config.getConfigurationSection("Users." + uuid).getString("group");
-                for (String permission : config.getConfigurationSection("Groups." + group).getStringList("permissions")) {
+        if (config.getConfigurationSection("Users." + uuid) == null) {
+            ConfigurationSection userSection = config.createSection("Users." + uuid);
+            userSection.set("permissions", new ArrayList<>());
+            if (ConfigManager.getDefaultGroup()) {
+                for (String permission : config.getConfigurationSection("Groups." + defaultGroup).getStringList("permissions")) {
                     permissionAttachment.setPermission(permission, true);
                 }
-                for (String permission : config.getStringList("Users." + uuid + ".permissions")) {
-                    permissionAttachment.setPermission(permission, true);
-                }
+                userSection.set("group", defaultGroup);
             }
+            ConfigManager.getInstance().saveConfig();
+            return;
         }
+
+        for (String permission : config.getConfigurationSection("Users." + uuid).getStringList("permissions")) {
+            permissionAttachment.setPermission(permission, true);
+        }
+
+        String group = config.getConfigurationSection("Users." + uuid).getString("group");
+        if (group == null) return;
+        if (config.getConfigurationSection("Groups") == null) return;
+        for (String permission : config.getConfigurationSection("Groups." + group).getStringList("permissions")) {
+            permissionAttachment.setPermission(permission, true);
+        }
+
     }
 
     public static void addPermission(Player player, String permission) {
@@ -196,6 +211,10 @@ public class PermissionManager {
         ConfigurationSection configurationSection = config.getConfigurationSection("Users." + Util.getUniqueId(player));
         String group = configurationSection.getString("group");
         return group == null ? null : group;
+    }
+
+    public static String getDefaultGroup() {
+        return defaultGroup;
     }
 
 

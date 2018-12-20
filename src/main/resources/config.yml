@@ -1,20 +1,3 @@
 # This is what will be displayed in front of all of DexPermissions chat messages
 plugin-prefix: "&8[&bDexPermissions&8] &f"
-
-Groups:
-  member:
-    permissions:
-      - example.permission
-    prefix: "&8[&bMember&8] &f"
-    suffix: "&f>>"
-  mod:
-    permissions:
-      - example2.permission
-    prefix: "&8[&aMod&8] &f"
-    suffix: "&f>>"
-    inherits: member
-
-Users:
-  0e11c47b-d93a-42af-a13f-5fa7f0dca22e:
-    permissions: []
-    group: member
+default-group: default
