@@ -11,6 +11,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
 
 import static me.iblitzkriegi.dexpermissions.util.managers.PermissionManager.playerPermissions;
 
@@ -51,7 +52,11 @@ public class ConfigManager {
     }
 
     public void saveConfig() {
-        plugin.saveConfig();
+        try {
+            config.save(file);
+        } catch (IOException e) {
+
+        }
     }
 
     public void reloadConfig() {
@@ -62,6 +67,7 @@ public class ConfigManager {
             PermissionManager.setupPermissions(player);
         }
         prefix = config.getString("plugin-prefix");
+        if (config.getConfigurationSection("Groups") == null) return;
         for (String group : config.getConfigurationSection("Groups").getKeys(false)) {
             ConfigurationSection configurationSection = config.getConfigurationSection("Groups." + group);
             String prefix = configurationSection.getString("prefix");
